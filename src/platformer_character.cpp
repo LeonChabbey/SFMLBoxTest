@@ -22,6 +22,7 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 	box.shape = &box_shape;
 	box.friction = 0.f;
 
+	//Feet sensor
 	b2FixtureDef foot;
 	b2PolygonShape foot_shape;
 	foot.isSensor = true;
@@ -35,8 +36,22 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 	foot.userData = &contactData;
 
 
+	//Left and right sides sensor
+	b2FixtureDef sides;
+	b2PolygonShape sides_shape;
+	sides.isSensor = true;
+	sides_shape.SetAsBox(
+		pixel2meter(size.x + 2.f) / 2, pixel2meter(size.y) / 4.f,
+		b2Vec2(0.f, 0.f),
+		0.f);
+	sides.shape = &sides_shape;
+	contactData.contactDataType = ContactDataType::PLATFORM_CHARACTER;
+	contactData.data = this;
+	sides.userData = &contactData;
+
 	body->CreateFixture(&box);
 	body->CreateFixture(&foot);
+	body->CreateFixture(&sides);
 }
 
 PlatformerCharacter::~PlatformerCharacter()
