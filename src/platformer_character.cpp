@@ -21,6 +21,7 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 		pixel2meter(size.x) / 2.f, pixel2meter(size.y) / 2.f);
 	box.shape = &box_shape;
 	box.friction = 0.f;
+	body->CreateFixture(&box);
 
 	//Feet sensor
 	b2FixtureDef foot;
@@ -31,27 +32,42 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 		b2Vec2(0.f, pixel2meter(size.y)/2), 
 		0.f);
 	foot.shape = &foot_shape;
-	contactData.contactDataType = ContactDataType::PLATFORM_CHARACTER;
-	contactData.data = this;
-	foot.userData = &contactData;
-
-
-	//Left and right sides sensor
-	b2FixtureDef sides;
-	b2PolygonShape sides_shape;
-	sides.isSensor = true;
-	sides_shape.SetAsBox(
-		pixel2meter(size.x + 2.f) / 2, pixel2meter(size.y) / 4.f,
-		b2Vec2(0.f, 0.f),
-		0.f);
-	sides.shape = &sides_shape;
-	contactData.contactDataType = ContactDataType::PLATFORM_CHARACTER;
-	contactData.data = this;
-	sides.userData = &contactData;
-
-	body->CreateFixture(&box);
+	ContactData feet_data;
+	feet_data.contactDataType = ContactDataType::PLATFORM_CHARACTER;
+	feet_data.data = this;
+	foot.userData = &feet_data;
 	body->CreateFixture(&foot);
-	body->CreateFixture(&sides);
+
+
+	//Right side sensor
+	b2FixtureDef right_side;
+	b2PolygonShape right_side_shape;
+	right_side.isSensor = true;
+	right_side_shape.SetAsBox(
+		pixel2meter(size.x) / 5.f, pixel2meter(size.y) / 3.f,
+		b2Vec2(pixel2meter(size.x)/2, 0.f),
+		0.f);
+	right_side.shape = &right_side_shape;
+	ContactData right_side_data;
+	right_side_data.contactDataType = ContactDataType::PLATFORM_CHARACTER_RIGHT;
+	right_side_data.data = this;
+	right_side.userData = &right_side_data;
+	body->CreateFixture(&right_side);
+
+	//Left side sensor
+	b2FixtureDef left_side;
+	b2PolygonShape left_side_shape;
+	left_side.isSensor = true;
+	left_side_shape.SetAsBox(
+		pixel2meter(size.x) / 5.f, pixel2meter(size.y) / 3.f,
+		b2Vec2(pixel2meter(size.x)/-2, 0.f),
+		0.f);
+	left_side.shape = &left_side_shape;
+	ContactData left_side_data;
+	left_side_data.contactDataType = ContactDataType::PLATFORM_CHARACTER_LEFT;
+	left_side_data.data = this;
+	left_side.userData = &left_side_data;
+	body->CreateFixture(&left_side);
 }
 
 PlatformerCharacter::~PlatformerCharacter()
@@ -77,7 +93,7 @@ void PlatformerCharacter::draw(sf::RenderWindow& window)
 
 void PlatformerCharacter::onCollisionEnter(ContactData* thisFixture, ContactData* otherFixture)
 {
-	std::cout << "foot:" << foot << "\n" << std::flush;
+	std::cout << "dataType:" << (int)thisFixture->contactDataType << "\n" << std::flush;
 }
 
 void PlatformerCharacter::onCollisionExit(ContactData* thisFixture, ContactData * otherFixture)
