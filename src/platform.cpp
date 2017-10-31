@@ -1,4 +1,5 @@
 #include <platform.h>
+#include <iostream>
 
 Platform::Platform(b2World & world, sf::Vector2f position, sf::Vector2f size)
 {
@@ -26,6 +27,15 @@ Platform::Platform(b2World & world, sf::Vector2f position, sf::Vector2f size)
 }
 
 Platform::~Platform()
+{
+}
+
+void Platform::onCollisionEnter(ContactData* thisFixture, ContactData* otherFixture)
+{
+	std::cout << "test" << "\n" << std::flush;
+}
+
+void Platform::onCollisionExit(ContactData* thisFixture, ContactData * otherFixture)
 {
 }
 

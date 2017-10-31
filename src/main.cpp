@@ -5,61 +5,47 @@
 #include <iostream>
 #include <list>
 
+#include <default_behaviour.h>
 #include <Box2D/Box2D.h>
 
-void CheckUserData(void* userData, PlatformerCharacter** pCharPtr, Platform** platformPtr)
+void CheckUserData(void* userData, DefaultBehaviour** ptr)
 {
 	ContactData* data = static_cast<ContactData*>(userData);
-	switch (data->contactDataType)
-	{
-	case ContactDataType::PLATFORM:
-		*platformPtr = static_cast<Platform*>(data->data);
-		break;
-	case ContactDataType::PLATFORM_CHARACTER:
-		*pCharPtr = static_cast<PlatformerCharacter*>(data->data);
-		break;
-	}
+	
+	*ptr = static_cast<DefaultBehaviour*>(data->data);
 }
 
 class MyContactListener : public b2ContactListener
 {
 	void BeginContact(b2Contact* contact) 
 	{
-		PlatformerCharacter* pChar = nullptr;
-		Platform* platform = nullptr;
-		if (contact->GetFixtureA()->GetUserData() != NULL)
-		{
-			
-			CheckUserData(contact->GetFixtureA()->GetUserData(), &pChar, &platform);
-		}
-		if (contact->GetFixtureB()->GetUserData() != NULL)
-		{
-			CheckUserData(contact->GetFixtureB()->GetUserData(), &pChar, &platform);
+		ContactData* fixtureAContactData = static_cast<ContactData*>(contact->GetFixtureA()->GetUserData());
+		ContactData* fixtureBContactData = static_cast<ContactData*>(contact->GetFixtureB()->GetUserData());
 
-		}
-		if (platform != nullptr && pChar != nullptr)
-		{
-			pChar->touch_ground();
-		}
+		if (fixtureAContactData == nullptr || fixtureBContactData == nullptr)
+			return;
 
+		DefaultBehaviour* fixtureA = static_cast<DefaultBehaviour*>(fixtureAContactData->data);
+		DefaultBehaviour* fixtureB = static_cast<DefaultBehaviour*>(fixtureBContactData->data);
+		
+		std::cout << typeid(fixtureB).name() << "\n" << std::flush;
+
+		fixtureA->onCollisionEnter(fixtureAContactData, fixtureBContactData);
+		fixtureB->onCollisionEnter(fixtureBContactData, fixtureAContactData);
 	}
 
 	void EndContact(b2Contact* contact) {
+		//ContactData* fixtureAContactData = static_cast<ContactData*>(contact->GetFixtureA()->GetUserData());
+		//ContactData* fixtureBContactData = static_cast<ContactData*>(contact->GetFixtureB()->GetUserData());
 
-		PlatformerCharacter* pChar = nullptr;
-		Platform* platform = nullptr;
-		if (contact->GetFixtureA()->GetUserData() != NULL)
-		{
-			CheckUserData(contact->GetFixtureA()->GetUserData(), &pChar, &platform);
-		}
-		if (contact->GetFixtureB()->GetUserData() != NULL)
-		{
-			CheckUserData(contact->GetFixtureB()->GetUserData(), &pChar, &platform);
-		}
-		if (platform != nullptr && pChar != nullptr)
-		{
-			pChar->leave_ground();
-		}
+		/*if (fixtureAContactData == nullptr || fixtureBContactData == nullptr)
+			return;
+
+		DefaultBehaviour* fixtureA = static_cast<DefaultBehaviour*>(fixtureAContactData->data);
+		DefaultBehaviour* fixtureB = static_cast<DefaultBehaviour*>(fixtureBContactData->data);
+
+		fixtureA->onCollisionExit(fixtureAContactData, fixtureBContactData);
+		fixtureB->onCollisionExit(fixtureBContactData, fixtureAContactData);*/
 	}
 };
 
@@ -84,6 +70,7 @@ int main()
 	int32 positionIterations = 3;   //how strongly to correct position
 
 	PlatformerCharacter character(myWorld);
+	Platform test(myWorld, sf::Vector2f(250.f, 200.f), sf::Vector2f(100.f, 600.f));
 
 	std::list<Platform> platforms =
 	{
@@ -132,6 +119,7 @@ int main()
 		{
 			platform.draw(window);
 		}
+		test.draw(window);
 		window.display();
 	}
 

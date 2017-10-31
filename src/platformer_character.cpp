@@ -75,6 +75,15 @@ void PlatformerCharacter::draw(sf::RenderWindow& window)
 	window.draw(rect);
 }
 
+void PlatformerCharacter::onCollisionEnter(ContactData* thisFixture, ContactData* otherFixture)
+{
+	std::cout << "foot:" << foot << "\n" << std::flush;
+}
+
+void PlatformerCharacter::onCollisionExit(ContactData* thisFixture, ContactData * otherFixture)
+{
+}
+
 void PlatformerCharacter::touch_ground()
 {
 	foot++;

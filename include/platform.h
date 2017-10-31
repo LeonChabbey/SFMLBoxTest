@@ -3,9 +3,10 @@
 
 #include <Box2D/Box2D.h>
 #include <SFML/Graphics.hpp>
+#include <default_behaviour.h>
 #include <utility.h>
 
-class Platform
+class Platform : public DefaultBehaviour
 {
 public:
 	Platform(b2World& world, 
@@ -13,14 +14,15 @@ public:
 		sf::Vector2f size = sf::Vector2f(800.f, 100.f));
 	~Platform();
 
+	void onCollisionEnter(ContactData*, ContactData*);
+	void onCollisionExit(ContactData*, ContactData*);
+
 	void draw(sf::RenderWindow&);
 private:
 	b2Body* body;
 	sf::RectangleShape rect;
 	sf::Vector2f center_position;
 	sf::Vector2f size;
-
-	ContactData contactData;
 };
 
 
