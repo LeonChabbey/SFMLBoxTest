@@ -76,13 +76,14 @@ PlatformerCharacter::~PlatformerCharacter()
 void PlatformerCharacter::update()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-		if (wall > 0)
-			body->ApplyForce(b2Vec2(jump_speed/2, -jump_speed), body->GetWorldCenter(), true);
+		if (foot > 0)
+			body->ApplyForce(b2Vec2(0, -jump_speed), body->GetWorldCenter(), true);
+			
+		else if (wall > 0)
+			body->ApplyForce(b2Vec2(jump_speed / 2, -jump_speed), body->GetWorldCenter(), true);
+			
 		else if (wall < 0)
 			body->ApplyForce(b2Vec2(-jump_speed / 2, -jump_speed), body->GetWorldCenter(), true);
-
-		if (foot > 0)
-			body->ApplyForce(b2Vec2(0, -jump_speed), body->GetWorldCenter(), true);			
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{

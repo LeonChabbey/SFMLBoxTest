@@ -61,7 +61,6 @@ int main()
 	int32 positionIterations = 3;   //how strongly to correct position
 
 	PlatformerCharacter character(myWorld);
-	Platform test(myWorld, sf::Vector2f(600.f, 200.f), sf::Vector2f(100.f, 600.f));
 
 	std::list<Platform*> platforms;
 	platforms.push_back(new Platform(myWorld));
@@ -101,7 +100,6 @@ int main()
 		{
 			platform->draw(window);
 		}
-		test.draw(window);
 		window.display();
 	}
 
