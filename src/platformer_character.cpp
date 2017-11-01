@@ -41,7 +41,7 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 	b2PolygonShape right_side_shape;
 	right_side.isSensor = true;
 	right_side_shape.SetAsBox(
-		pixel2meter(size.x) / 5.f, pixel2meter(size.y) / 3.f,
+		pixel2meter(1.f), pixel2meter(size.y) / 3.f,
 		b2Vec2(pixel2meter(size.x)/2, 0.f),
 		0.f);
 	right_side.shape = &right_side_shape;
@@ -55,7 +55,7 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 	b2PolygonShape left_side_shape;
 	left_side.isSensor = true;
 	left_side_shape.SetAsBox(
-		pixel2meter(size.x) / 5.f, pixel2meter(size.y) / 3.f,
+		pixel2meter(1.f), pixel2meter(size.y) / 3.f,
 		b2Vec2(pixel2meter(size.x)/-2, 0.f),
 		0.f);
 	left_side.shape = &left_side_shape;
@@ -73,14 +73,26 @@ PlatformerCharacter::~PlatformerCharacter()
 {
 }
 
-void PlatformerCharacter::update(float move_axis, bool jump_button)
+void PlatformerCharacter::update()
 {
-	//manage movements
-	body->SetLinearVelocity(b2Vec2(walk_speed*move_axis, body->GetLinearVelocity().y));
-	if (foot > 0 && jump_button)
-	{
-		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -jump_speed));
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+		if (wall > 0)
+			body->ApplyForce(b2Vec2(jump_speed/2, -jump_speed), body->GetWorldCenter(), true);
+		else if (wall < 0)
+			body->ApplyForce(b2Vec2(-jump_speed / 2, -jump_speed), body->GetWorldCenter(), true);
+
+		if (foot > 0)
+			body->ApplyForce(b2Vec2(0, -jump_speed), body->GetWorldCenter(), true);			
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		body->ApplyForce(b2Vec2(-walk_speed, 0), body->GetWorldCenter(), true);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		body->ApplyForce(b2Vec2(walk_speed, 0), body->GetWorldCenter(), true);
+	}
+
 	center_position = meter2pixel(body->GetPosition());
 	rect.setPosition(center_position - size / 2.f);
 }
@@ -90,13 +102,44 @@ void PlatformerCharacter::draw(sf::RenderWindow& window)
 	window.draw(rect);
 }
 
-void PlatformerCharacter::onCollisionEnter(ContactDataType* thisContactDataType, ContactData* otherFixture)
+void PlatformerCharacter::onCollisionEnter(ContactDataType thisContactDataType, ContactData* otherFixture)
 {
-	std::cout << "dataType:" << (int)*thisContactDataType << "\n" << std::flush;
+	switch (thisContactDataType) {
+	case ContactDataType::PLATFORM_CHARACTER:
+		touch_ground();
+		break;
+	case ContactDataType::PLATFORM_CHARACTER_LEFT:
+		increment_wall();
+		break;
+	case ContactDataType::PLATFORM_CHARACTER_RIGHT:
+		decrement_wall();
+		break;
+	}
 }
 
-void PlatformerCharacter::onCollisionExit(ContactDataType* thisContactDataType, ContactData * otherFixture)
+void PlatformerCharacter::onCollisionExit(ContactDataType thisContactDataType, ContactData * otherFixture)
 {
+	switch (thisContactDataType) {
+	case ContactDataType::PLATFORM_CHARACTER:
+		leave_ground();
+		break;
+	case ContactDataType::PLATFORM_CHARACTER_LEFT:
+		decrement_wall();
+		break;
+	case ContactDataType::PLATFORM_CHARACTER_RIGHT:
+		increment_wall();
+		break;
+	}
+}
+
+void PlatformerCharacter::increment_wall()
+{
+	wall++;
+}
+
+void PlatformerCharacter::decrement_wall()
+{
+	wall--;
 }
 
 void PlatformerCharacter::touch_ground()

@@ -14,8 +14,8 @@ public:
 		sf::Vector2f size = sf::Vector2f(800.f, 100.f));
 	~Platform();
 
-	void onCollisionEnter(ContactDataType*, ContactData*);
-	void onCollisionExit(ContactDataType*, ContactData*);
+	void onCollisionEnter(ContactDataType, ContactData*);
+	void onCollisionExit(ContactDataType, ContactData*);
 
 	void draw(sf::RenderWindow&);
 private:

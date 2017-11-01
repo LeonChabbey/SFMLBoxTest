@@ -11,20 +11,23 @@ class PlatformerCharacter : public DefaultBehaviour
 public:
 	PlatformerCharacter(b2World&);
 	~PlatformerCharacter();
-	void update(float move_axis, bool jump_button);
+	void update();
 	void draw(sf::RenderWindow&);
-	void onCollisionEnter(ContactDataType*, ContactData*);
-	void onCollisionExit(ContactDataType*, ContactData*);
+	void onCollisionEnter(ContactDataType, ContactData*);
+	void onCollisionExit(ContactDataType, ContactData*);
+	void increment_wall();
+	void decrement_wall();
 	void touch_ground();
 	void leave_ground();
 private:
 	int foot = 0;
+	int wall = 0;
 	b2Body* body;
 	sf::RectangleShape rect;
 	sf::Vector2f center_position = sf::Vector2f(400.f, 300.f);
 	sf::Vector2f size = sf::Vector2f(64.f,64.f);
 	const float walk_speed = 5.0f;
-	const float jump_speed = 10.f;
+	const float jump_speed = 300.f;
 	ContactData feet_data;
 	ContactData left_side_data;
 	ContactData right_side_data;

@@ -8,13 +8,6 @@
 #include <default_behaviour.h>
 #include <Box2D/Box2D.h>
 
-void CheckUserData(void* userData, DefaultBehaviour** ptr)
-{
-	ContactData* data = static_cast<ContactData*>(userData);
-	
-	*ptr = static_cast<DefaultBehaviour*>(data->data);
-}
-
 class MyContactListener : public b2ContactListener
 {
 	void BeginContact(b2Contact* contact) 
@@ -27,11 +20,9 @@ class MyContactListener : public b2ContactListener
 
 		DefaultBehaviour* fixtureA = static_cast<DefaultBehaviour*>(fixtureAContactData->data);
 		DefaultBehaviour* fixtureB = static_cast<DefaultBehaviour*>(fixtureBContactData->data);
-		
-		std::cout << typeid(fixtureB).name() << "\n" << std::flush;
-
-		fixtureA->onCollisionEnter(&fixtureAContactData->contactDataType, fixtureBContactData);
-		fixtureB->onCollisionEnter(&fixtureBContactData->contactDataType, fixtureAContactData);
+	
+		fixtureA->onCollisionEnter(fixtureAContactData->contactDataType, fixtureBContactData);
+		fixtureB->onCollisionEnter(fixtureBContactData->contactDataType, fixtureAContactData);
 	}
 
 	void EndContact(b2Contact* contact) {
@@ -44,10 +35,8 @@ class MyContactListener : public b2ContactListener
 		DefaultBehaviour* fixtureA = static_cast<DefaultBehaviour*>(fixtureAContactData->data);
 		DefaultBehaviour* fixtureB = static_cast<DefaultBehaviour*>(fixtureBContactData->data);
 
-		std::cout << typeid(fixtureB).name() << "\n" << std::flush;
-
-		fixtureA->onCollisionExit(&fixtureAContactData->contactDataType, fixtureBContactData);
-		fixtureB->onCollisionExit(&fixtureBContactData->contactDataType, fixtureAContactData);
+		fixtureA->onCollisionExit(fixtureAContactData->contactDataType, fixtureBContactData);
+		fixtureB->onCollisionExit(fixtureBContactData->contactDataType, fixtureAContactData);
 	}
 };
 
@@ -94,16 +83,6 @@ int main()
 	
 	while (window.isOpen())
 	{
-		bool jump_button = false;
-		float move_axis = 0.0f;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			move_axis -= 1.0f;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			move_axis += 1.0f;
-		}
 		myWorld.Step(timeStep, velocityIterations, positionIterations);
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -112,16 +91,9 @@ int main()
 			{
 				window.close();
 			}
-			if (event.type == sf::Event::KeyPressed)
-			{
-				if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::Space)
-				{
-					jump_button = true;
-				}
-			}
 		}
 		
-		character.update(move_axis, jump_button);
+		character.update();
 		
 		window.clear();
 		character.draw(window);

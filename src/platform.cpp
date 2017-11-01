@@ -28,15 +28,13 @@ Platform::Platform(b2World & world, sf::Vector2f position, sf::Vector2f size)
 
 Platform::~Platform()
 {
-	std::cout << "blblb" << "\n" << std::flush;
 }
 
-void Platform::onCollisionEnter(ContactDataType* thisContactDataType, ContactData* otherFixture)
+void Platform::onCollisionEnter(ContactDataType thisContactDataType, ContactData* otherFixture)
 {
-	std::cout << "test" << "\n" << std::flush;
 }
 
-void Platform::onCollisionExit(ContactDataType* thisContactDataType, ContactData * otherFixture)
+void Platform::onCollisionExit(ContactDataType thisContactDataType, ContactData * otherFixture)
 {
 }
 
