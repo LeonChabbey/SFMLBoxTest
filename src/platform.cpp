@@ -20,9 +20,9 @@ Platform::Platform(b2World & world, sf::Vector2f position, sf::Vector2f size)
 	b2PolygonShape box_shape;
 	box_shape.SetAsBox(pixel2meter(size.x) / 2.f, pixel2meter(size.y) / 2.f);
 	box.shape = &box_shape;
-	contactData.contactDataType = ContactDataType::PLATFORM;
-	contactData.data = this;
-	box.userData = &contactData;
+	boxData.contactDataType = ContactDataType::PLATFORM;
+	boxData.data = this;
+	box.userData = &boxData;
 	body->CreateFixture(&box);
 }
 

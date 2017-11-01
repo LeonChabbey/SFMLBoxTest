@@ -31,7 +31,7 @@ class MyContactListener : public b2ContactListener
 		std::cout << typeid(fixtureB).name() << "\n" << std::flush;
 
 		fixtureA->onCollisionEnter(fixtureAContactData, fixtureBContactData);
-		fixtureB->onCollisionEnter(fixtureBContactData, fixtureAContactData);
+		//fixtureB->onCollisionEnter(fixtureBContactData, fixtureAContactData);
 	}
 
 	void EndContact(b2Contact* contact) {

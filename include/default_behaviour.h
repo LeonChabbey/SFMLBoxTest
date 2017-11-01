@@ -7,7 +7,7 @@
 class DefaultBehaviour
 {
 protected:
-	ContactData contactData;
+	ContactData boxData;
 public:
 	DefaultBehaviour();
 	~DefaultBehaviour();

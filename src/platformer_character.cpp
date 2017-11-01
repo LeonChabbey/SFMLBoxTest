@@ -21,7 +21,6 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 		pixel2meter(size.x) / 2.f, pixel2meter(size.y) / 2.f);
 	box.shape = &box_shape;
 	box.friction = 0.f;
-	body->CreateFixture(&box);
 
 	//Feet sensor
 	b2FixtureDef foot;
@@ -32,11 +31,9 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 		b2Vec2(0.f, pixel2meter(size.y)/2), 
 		0.f);
 	foot.shape = &foot_shape;
-	ContactData feet_data;
 	feet_data.contactDataType = ContactDataType::PLATFORM_CHARACTER;
 	feet_data.data = this;
 	foot.userData = &feet_data;
-	body->CreateFixture(&foot);
 
 
 	//Right side sensor
@@ -48,11 +45,10 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 		b2Vec2(pixel2meter(size.x)/2, 0.f),
 		0.f);
 	right_side.shape = &right_side_shape;
-	ContactData right_side_data;
 	right_side_data.contactDataType = ContactDataType::PLATFORM_CHARACTER_RIGHT;
 	right_side_data.data = this;
 	right_side.userData = &right_side_data;
-	body->CreateFixture(&right_side);
+	
 
 	//Left side sensor
 	b2FixtureDef left_side;
@@ -63,10 +59,13 @@ PlatformerCharacter::PlatformerCharacter(b2World & world)
 		b2Vec2(pixel2meter(size.x)/-2, 0.f),
 		0.f);
 	left_side.shape = &left_side_shape;
-	ContactData left_side_data;
 	left_side_data.contactDataType = ContactDataType::PLATFORM_CHARACTER_LEFT;
 	left_side_data.data = this;
 	left_side.userData = &left_side_data;
+
+	body->CreateFixture(&box);
+	body->CreateFixture(&foot);
+	body->CreateFixture(&right_side);
 	body->CreateFixture(&left_side);
 }
 
