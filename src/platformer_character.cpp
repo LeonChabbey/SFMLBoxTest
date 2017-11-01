@@ -90,12 +90,12 @@ void PlatformerCharacter::draw(sf::RenderWindow& window)
 	window.draw(rect);
 }
 
-void PlatformerCharacter::onCollisionEnter(ContactData* thisFixture, ContactData* otherFixture)
+void PlatformerCharacter::onCollisionEnter(ContactDataType* thisContactDataType, ContactData* otherFixture)
 {
-	std::cout << "dataType:" << (int)thisFixture->contactDataType << "\n" << std::flush;
+	std::cout << "dataType:" << (int)*thisContactDataType << "\n" << std::flush;
 }
 
-void PlatformerCharacter::onCollisionExit(ContactData* thisFixture, ContactData * otherFixture)
+void PlatformerCharacter::onCollisionExit(ContactDataType* thisContactDataType, ContactData * otherFixture)
 {
 }
 

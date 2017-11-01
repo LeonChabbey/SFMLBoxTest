@@ -13,8 +13,8 @@ public:
 	~PlatformerCharacter();
 	void update(float move_axis, bool jump_button);
 	void draw(sf::RenderWindow&);
-	void onCollisionEnter(ContactData*, ContactData*);
-	void onCollisionExit(ContactData*, ContactData*);
+	void onCollisionEnter(ContactDataType*, ContactData*);
+	void onCollisionExit(ContactDataType*, ContactData*);
 	void touch_ground();
 	void leave_ground();
 private:

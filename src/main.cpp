@@ -30,22 +30,24 @@ class MyContactListener : public b2ContactListener
 		
 		std::cout << typeid(fixtureB).name() << "\n" << std::flush;
 
-		fixtureA->onCollisionEnter(fixtureAContactData, fixtureBContactData);
-		//fixtureB->onCollisionEnter(fixtureBContactData, fixtureAContactData);
+		fixtureA->onCollisionEnter(&fixtureAContactData->contactDataType, fixtureBContactData);
+		fixtureB->onCollisionEnter(&fixtureBContactData->contactDataType, fixtureAContactData);
 	}
 
 	void EndContact(b2Contact* contact) {
-		//ContactData* fixtureAContactData = static_cast<ContactData*>(contact->GetFixtureA()->GetUserData());
-		//ContactData* fixtureBContactData = static_cast<ContactData*>(contact->GetFixtureB()->GetUserData());
+		ContactData* fixtureAContactData = static_cast<ContactData*>(contact->GetFixtureA()->GetUserData());
+		ContactData* fixtureBContactData = static_cast<ContactData*>(contact->GetFixtureB()->GetUserData());
 
-		/*if (fixtureAContactData == nullptr || fixtureBContactData == nullptr)
+		if (fixtureAContactData == nullptr || fixtureBContactData == nullptr)
 			return;
 
 		DefaultBehaviour* fixtureA = static_cast<DefaultBehaviour*>(fixtureAContactData->data);
 		DefaultBehaviour* fixtureB = static_cast<DefaultBehaviour*>(fixtureBContactData->data);
 
-		fixtureA->onCollisionExit(fixtureAContactData, fixtureBContactData);
-		fixtureB->onCollisionExit(fixtureBContactData, fixtureAContactData);*/
+		std::cout << typeid(fixtureB).name() << "\n" << std::flush;
+
+		fixtureA->onCollisionExit(&fixtureAContactData->contactDataType, fixtureBContactData);
+		fixtureB->onCollisionExit(&fixtureBContactData->contactDataType, fixtureAContactData);
 	}
 };
 
@@ -72,7 +74,15 @@ int main()
 	PlatformerCharacter character(myWorld);
 	Platform test(myWorld, sf::Vector2f(600.f, 200.f), sf::Vector2f(100.f, 600.f));
 
-	std::list<Platform> platforms =
+	std::list<Platform*> platforms;
+	platforms.push_back(new Platform(myWorld));
+	platforms.push_back(new Platform(myWorld, sf::Vector2f(400.f, 0.f)));
+	platforms.push_back(new Platform(myWorld, sf::Vector2f(0.f, 300.f), sf::Vector2f(100.f, 600.f)));
+	platforms.push_back(new Platform(myWorld, sf::Vector2f(800.f, 300.f), sf::Vector2f(100.f, 600.f)));
+	platforms.push_back(new Platform(myWorld, sf::Vector2f(150.f, 200.f), sf::Vector2f(200.f, 50.f)));
+	platforms.push_back(new Platform(myWorld, sf::Vector2f(650.f, 400.f), sf::Vector2f(200.f, 50.f)));
+	
+	/*std::list<Platform> platforms =
 	{
 		Platform(myWorld),
 		Platform(myWorld, sf::Vector2f(400.f,0.f)),
@@ -80,7 +90,7 @@ int main()
 		Platform(myWorld, sf::Vector2f(800.f,300.f), sf::Vector2f(100.f,600.f)),
 		Platform(myWorld, sf::Vector2f(150.f,200.f), sf::Vector2f(200.f,50.f)),
 		Platform(myWorld, sf::Vector2f(650.f,400.f), sf::Vector2f(200.f,50.f)),
-	};
+	};*/
 	
 	while (window.isOpen())
 	{
@@ -115,9 +125,9 @@ int main()
 		
 		window.clear();
 		character.draw(window);
-		for (Platform& platform : platforms)
+		for (Platform* platform : platforms)
 		{
-			platform.draw(window);
+			platform->draw(window);
 		}
 		test.draw(window);
 		window.display();
